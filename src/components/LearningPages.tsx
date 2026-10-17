@@ -23,7 +23,7 @@ export function ReviewPage({state,onStart,onLearn}:{state:LearningState;onStart:
 }
 
 export function PronunciationPage({state}:{state:LearningState}){
-  const language=state.activeLanguage;const entries=[...curriculum[language].flatMap(u=>u.lessons).flatMap(l=>l.knowledge),...state.savedExpressions.filter(k=>k.language===language)];
+  const language=state.activeLanguage;const entries=Array.from(new Map([...curriculum[language].flatMap(u=>u.lessons).flatMap(l=>l.knowledge),...state.savedExpressions.filter(k=>k.language===language)].map(k=>[k.id,k])).values());
   const [selected,setSelected]=useState(entries[0].id);const current=entries.find(k=>k.id===selected)??entries[0];
   return <div><PageHeading eyebrow="YOUR VOICE, YOUR PACE" title="开口，就是进步" description={`${languages[language].name} · 听一听，读一句。这里没有分数，只有每次更自在的表达。`}/><div className="pronunciation-layout"><aside className="pronunciation-list"><h3>选一句，试试看</h3><label className="sr-only" htmlFor="pronunciation-picker">选择跟读内容</label><select id="pronunciation-picker" value={current.id} onChange={e=>setSelected(e.target.value)}>{entries.map(k=><option value={k.id} key={k.id}>{k.target} · {k.meaning}</option>)}</select>{entries.slice(0,15).map(k=><button className={current.id===k.id?'active':''} onClick={()=>setSelected(k.id)} key={k.id}><strong>{k.target}</strong><small>{k.meaning}</small>{current.id===k.id?<Volume2 size={17}/>:null}</button>)}</aside><Recorder key={current.id} knowledge={current} showReading={state.profile.reading}/></div></div>;
 }
