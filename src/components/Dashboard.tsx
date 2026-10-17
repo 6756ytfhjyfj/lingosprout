@@ -1,0 +1,39 @@
+'use client';
+import { ArrowRight,Star,Lock,Play,Check,Sun,Leaf,Coffee,Map,Flame,Target,Sparkles,ChevronRight,Headphones,Flower2,Trophy } from 'lucide-react';
+import { curriculum,languages,lessonById } from '@/lib/curriculum';
+import { canStartLesson,dueReviews,getStreak,localDate,nextLesson } from '@/lib/learning';
+import type { LearningState,Lesson } from '@/lib/types';
+import { GardenScene,Mascot } from './Mascot';
+import { Button,Progress,TextLink } from './Primitives';
+const unitIcons={sun:Sun,leaf:Leaf,cup:Coffee,map:Map};
+export function Dashboard({state,onLesson,onResume,onReview,onPronunciation,onPremium}:{state:LearningState;onLesson:(lesson:Lesson)=>void;onResume:()=>void;onReview:()=>void;onPronunciation:()=>void;onPremium:()=>void}){
+  const language=state.activeLanguage;const units=curriculum[language];const progress=state.progress[language];const current=nextLesson(state,language);
+  const todayXP=state.dailyXP[localDate()]??0;const goal=state.profile.dailyGoal;const due=dueReviews(state,language).length;const completed=Object.keys(progress.completed).length;
+  const finished=completed===12;
+  const dates=Array.from({length:7},(_,i)=>{const day=new Date();day.setDate(day.getDate()-6+i);return day;});
+  return <div className="dashboard">
+    <div className="welcome-row"><div><span className="eyebrow">LET YOUR WORDS GROW</span><h1>每天一点，世界近一点<span className="heading-spark">✳</span></h1><p>你好，{state.profile.name}。新的小进步，正在等你。</p></div><span className="season-tag"><Leaf size={15}/>今天也在生长</span></div>
+    <div className="dashboard-grid"><div className="learning-column">
+      <section className="learning-hero"><div className="hero-copy"><span className="hero-pill"><span/>你的{languages[language].name}小旅程 · 入门篇</span><h2>{finished?'让新知识，':completed===0?'每一句你好，':'下一步，'}<br/>{finished?'慢慢扎下根。':completed===0?'都是新的开始。':'还有新的风景。'}</h2><p>{finished?'首版 12 关已经完成，去复习中巩固吧。':languages[language].description}<br/>{finished?'这只是入门，更多可能正等着你。':'和芽芽一起，把好奇变成日常。'}</p><Button onClick={()=>state.draft?onResume():finished?onReview():onLesson(current)}>{state.draft?'继续上次练习':finished?'去复习，巩固一下':completed===0?'开始第一关':'继续学习'}<ArrowRight size={18}/></Button><small><span className="mini-clock"/> {state.draft?'进度已为你保留':finished?'已完成入门体验 · 不代表完整语言等级':'每关约 5–8 分钟 · 首次通关 +30 XP'}</small></div><GardenScene/><div className="hero-language-caption" aria-hidden="true"><span>✦</span> A little every day.</div></section>
+      <section className="mobile-study-summary" aria-label="今日学习概览"><div className="mobile-summary-top"><span><Target size={17}/>今日目标</span><strong>{todayXP} <small>/ {goal} XP</small></strong><span className="mobile-summary-streak"><Flame size={17}/>{getStreak(state.studyDays)} 天</span></div><Progress value={todayXP/goal*100} label="手机端今日经验目标"/><div className="mobile-summary-bottom"><span>{todayXP>=goal?'今日目标已达成，做得很好。':'一点点努力，也能看见生长。'}</span><button onClick={onReview}>{due?`${due} 个知识点待复习`:'看看复习'}<ArrowRight size={13}/></button></div></section>
+      {state.draft?<div className="resume-banner"><div><strong>你还有一段小旅程没走完</strong><span>{languages[state.draft.language].name} · {state.draft.mode==='review'?'复习练习':lessonById[state.draft.lessonId]?.title}</span></div><TextLink onClick={onResume}>继续练习</TextLink></div>:null}
+      <div className="section-heading"><div><h2>我的学习小径 <span className="subtle-tag">{completed} / 12 关</span></h2><p>不赶路，每一步都算数。</p></div><span className="path-key"><i/>当前可学<span/> <Lock size={12}/>待解锁</span></div>
+      <div className="unit-list">{units.map((unit,i)=>{const Icon=unitIcons[unit.icon as keyof typeof unitIcons];const count=unit.lessons.filter(l=>progress.completed[l.id]).length;const locked=!canStartLesson(state,unit.lessons[0].id);
+        const activeUnit=unit.lessons.some(l=>l.id===current.id)&&!finished;
+        return <section key={unit.id} className={`unit-card ${locked?'unit-locked':''} ${activeUnit?'unit-active':''}`}><div className="unit-heading"><span className={`unit-art unit-art-${i}`}><Icon size={25}/></span><div><span className="unit-number">UNIT {String(i+1).padStart(2,'0')}{i===0&&language!=='en'?' · 文字选段':''}</span><h3>{unit.title}</h3><p>{unit.description}</p></div><span className={`unit-count ${activeUnit?'active-unit-count':''}`}>{activeUnit?'正在探索':count===3?'已完成':`${count}/3`}</span></div>
+          {activeUnit?<div className="active-unit-summary"><span className="next-lesson-label"><Leaf size={14}/>下一小步</span><strong>{current.title}</strong><span>{current.goal}</span></div>:null}
+          <div className="lesson-path"><div className="path-line"/>{unit.lessons.map((lesson,l)=>{const done=Boolean(progress.completed[lesson.id]);const available=canStartLesson(state,lesson.id);const active=lesson.id===current.id&&!done;
+            return <button key={lesson.id} className={`lesson-node-wrap node-${l} ${done?'completed':''} ${active?'current':''}`} disabled={!available} onClick={()=>onLesson(lesson)} aria-label={`${lesson.title}，${done?'已完成，可再次练习':available?'当前可学':'待解锁'}`}><span className="lesson-node">{done?<Check size={29}/>:active?<Play size={28} fill="currentColor"/>:<Lock size={23}/>}</span>{active?<span className="start-bubble">{completed===0?'从这里出发':'下一小步'}</span>:null}<strong>{lesson.title}</strong><small>{done?'已完成 · 再巩固':available?'6 题 · +30 XP':'完成前一关解锁'}</small></button>;
+          })}</div>
+        </section>;
+      })}</div><p className="curriculum-note"><Flower2 size={16}/>这是精心挑选的入门体验。更多内容，会和你一起慢慢生长。</p>
+    </div><aside className="dashboard-aside">
+      <section className="daily-goal-card"><div className="card-topline"><h3><Target size={18}/>今日小目标</h3><span>{todayXP>=goal?'已达成 ✦':'加油，慢慢来'}</span></div><div className="goal-ring" style={{'--goal':`${Math.min(100,todayXP/goal*100)}%`} as React.CSSProperties}><div><strong>{todayXP}<small> / {goal}</small></strong><span>今日经验 XP</span></div></div><p>{todayXP>=goal?'今天的努力，已经开出一朵小花。':'完成一关，让今天的进步看得见。'}</p><div className="goal-divider"/><div className="streak-summary"><span className="flame-icon"><Flame size={23}/></span><div><strong>{getStreak(state.studyDays)} 天 <small>连续学习</small></strong><p>{state.studyDays.includes(localDate())?'今天已打卡，做得很好！':'完成一关或一组复习即可打卡'}</p></div></div><div className="week-calendar">{dates.map((day,i)=><div key={i} className={state.studyDays.includes(localDate(day))?'studied':i===6?'today':''}><small>{['日','一','二','三','四','五','六'][day.getDay()]}</small><span>{state.studyDays.includes(localDate(day))?<Check size={14}/>:day.getDate()}</span></div>)}</div></section>
+      <section className="review-nudge"><div className="nudge-icon"><RotateIcon/></div><h3>{due?`${due} 个知识点，等你再见`:'让记忆，慢慢扎根'}</h3><p>{due?'花一点时间复习，让熟悉变成掌握。':'学过的内容会在合适的时间回来。现在先种下第一颗种子吧。'}</p><TextLink onClick={onReview}>去看看智能复习</TextLink></section>
+      <button className="pronunciation-nudge" onClick={onPronunciation}><span><Headphones size={23}/></span><div><strong>开口，就是进步</strong><small>免费跟读 · 听示范与录音</small></div><ChevronRight size={17}/></button>
+      <section className="milestone-card"><div className="card-topline"><h3><Trophy size={18}/>成长里程碑</h3><span>初见世界</span></div><div className="milestone-illustration"><span>✦</span><Star size={33} fill="#f0d889"/><span>✧</span></div><strong>第一颗小种子</strong><p>{completed?'你已经迈出了珍贵的第一步！':'完成任意一关，点亮你的首个成就'}</p><Progress value={completed?100:0} label="首次通关成就进度"/></section>
+      <section className="premium-nudge"><span><Sparkles size={15}/>语芽 Premium</span><h3>学到的，聊出来。</h3><p>更多 AI 陪练额度，<br/>让对话成为你的日常。</p><TextLink onClick={onPremium}>了解 Premium</TextLink><Mascot className="premium-mini-mascot"/></section>
+    </aside></div>
+  </div>;
+}
+function RotateIcon(){return <svg width="25" height="25" viewBox="0 0 24 24" fill="none"><path d="M19 8a8 8 0 1 0 1 8M19 3v6h-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>;}

@@ -1,0 +1,2 @@
+import {defineConfig} from '@playwright/test';
+export default defineConfig({testDir:'./tests/e2e',timeout:60000,fullyParallel:false,workers:1,use:{baseURL:process.env.TEST_BASE_URL??'http://127.0.0.1:3000',headless:true,trace:'retain-on-failure',launchOptions:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH?{executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH}:{}},reporter:'list',projects:[{name:'chromium',use:{browserName:'chromium'}}]});

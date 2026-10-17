@@ -1,0 +1,542 @@
+/* LingoSprout visual refresh: readable learning surfaces, quiet garden details. */
+:root {
+  --bg: #f7f8f2;
+  --ink: #243d30;
+  --muted: #62705d;
+  --green: #27654b;
+  --green-dark: #1f503c;
+  --line: #e2e7db;
+  --shadow: 0 4px 24px #34452a06;
+}
+
+body { font-size: 15px; }
+.button { min-height: 48px; border-radius: 13px; letter-spacing: .1px; }
+.button-primary { box-shadow: 0 4px 0 #1b4a35, 0 5px 15px #245f4810; }
+.button-secondary { box-shadow: 0 3px 0 #e7ebdf; }
+.icon-button { width: 44px; height: 44px; min-width: 44px; }
+.text-link { min-height: 40px; font-size: 13px; }
+.eyebrow { font-size: 11px; letter-spacing: 2px; color: #5e7456; }
+.tag { padding: 6px 11px; font-size: 12px; }
+.privacy-note { font-size: 12px; line-height: 1.9; }
+.notice { font-size: 13px; }
+.site-footer { font-size: 11px; }
+
+/* A stable frame with clearer navigation and comfortable type. */
+.sidebar { background: #fffefa; padding-top: 36px; }
+.sidebar .brand { gap: 12px; }
+.brand-mark { border-radius: 15px; box-shadow: inset 0 1px 0 #ffffff28; }
+.sidebar-caption { font-size: 11px; margin-top: 24px; }
+.sidebar nav { gap: 8px; }
+.sidebar nav button { min-height: 52px; border-radius: 13px; font-size: 15px; }
+.sidebar nav button.active { background: #e9f0df; border-color: #dce6cf; box-shadow: inset 3px 0 0 #759554; }
+.nav-ai, .free-label { font-size: 10px; }
+.sidebar-extra { font-size: 14px; min-height: 48px; }
+.sidebar-quote { border-radius: 19px; padding-bottom: 20px; }
+.sidebar-quote p { font-size: 13px; line-height: 1.9; }
+.sidebar-quote small, .sidebar-profile small { font-size: 11px; }
+.sidebar-profile strong { font-size: 12px; }
+.sidebar-profile { gap: 9px; }
+.sidebar-profile .icon-button { min-width: 28px; width: 28px; }
+.topbar { background: #fffefaed; backdrop-filter: blur(12px); }
+.language-switcher { min-height: 46px; border-radius: 13px; padding: 8px 13px; gap: 10px; font-size: 14px; }
+.language-switch-native { font-size: 12px; }
+.topbar-stats>span { font-size: 14px; }
+.topbar-stats small { font-size: 12px; }
+.topbar-premium { min-height: 40px; border-radius: 11px; font-size: 12px; }
+.topbar-avatar { width: 42px; height: 42px; }
+.main-content { padding-top: 38px; }
+.page-heading { margin-bottom: 30px; }
+.page-heading h1 { font-size: 30px; letter-spacing: -.7px; }
+.page-heading p { font-size: 14px; line-height: 1.9; max-width: 690px; }
+
+/* The first screen has one clear action, with the mascot in its own space. */
+.welcome-row { margin-bottom: 29px; }
+.welcome-row h1 { font-size: 30px; margin: 9px 0 10px; letter-spacing: -.8px; }
+.welcome-row p { font-size: 13px; }
+.season-tag { font-size: 12px; gap: 7px; }
+.heading-spark { color: #8b9c64; font-size: 25px; }
+.dashboard-grid { gap: 28px; grid-template-columns: minmax(0, 1fr) 290px; }
+.learning-hero {
+  min-height: 346px;
+  border-radius: 25px;
+  background: linear-gradient(118deg, #edf3e5 0%, #edf3e5 46%, #e2ecd6 100%);
+  border-color: #dce6cf;
+  box-shadow: inset 0 1px 0 #ffffffa3;
+}
+.hero-copy { width: 61%; padding: 31px 30px 28px; }
+.hero-pill { font-size: 11px; color: #577346; letter-spacing: .4px; }
+.hero-pill>span { height: 6px; width: 6px; background: #76994f; }
+.hero-copy h2 { font-size: 34px; line-height: 1.52; margin: 17px 0 15px; letter-spacing: .6px; }
+.hero-copy p { font-size: 13px; line-height: 1.95; color: #5f7451; margin-bottom: 22px; }
+.hero-copy .button { font-size: 14px; min-height: 48px; padding: 12px 23px; border-radius: 12px; }
+.hero-copy>small { font-size: 10px; color: #5c704d; margin-top: 15px; white-space: nowrap; }
+.mini-clock { width: 10px; height: 10px; border-color: #708d59; }
+.learning-hero>.garden-scene { width: 49%; right: -4px; bottom: 12px; height: 92%; }
+.garden-backdrop { opacity: .8; }
+.hero-mascot { width: 62%; left: 20%; bottom: 8px; filter: drop-shadow(0 12px 9px #486b2f12); }
+.floating-note { font-size: 12px; padding: 9px 13px; border-radius: 12px; box-shadow: 0 5px 14px #425b3610; border-color: #ffffff; }
+.note-a { top: 21%; left: 7%; font-size: 16px; }
+.note-b { right: 1%; top: 35%; font-size: 11px; }
+.note-c { left: 0; bottom: 20%; font-size: 13px; }
+.hero-language-caption { position: absolute; right: 25px; bottom: 14px; color: #647c52; font-size: 10px; letter-spacing: .5px; }
+.hero-language-caption>span { margin-right: 5px; color: #a18a41; }
+.mobile-study-summary { display: none; }
+
+/* Course cards keep locked paths quiet, while the next step is explicit. */
+.section-heading { margin-top: 30px; margin-bottom: 19px; }
+.section-heading h2 { font-size: 20px; }
+.section-heading p { font-size: 13px; margin-top: 6px; }
+.subtle-tag { font-size: 12px; padding: 4px 10px; }
+.path-key { font-size: 11px; }
+.unit-list { gap: 20px; }
+.unit-card { border-radius: 23px; border-color: #e1e7d9; background: #fffefa; }
+.unit-card.unit-active { border-color: #b9cca2; background: #fff; box-shadow: 0 5px 26px #58783b09, inset 0 3px 0 #d9e7c5; }
+.unit-heading { padding: 23px 24px 20px; gap: 15px; }
+.unit-art { width: 51px; height: 51px; border-radius: 15px; }
+.unit-heading h3 { font-size: 17px; }
+.unit-heading p { font-size: 12px; margin-top: 5px; }
+.unit-number { font-size: 10px; letter-spacing: 1.6px; margin-bottom: 5px; }
+.unit-count { font-size: 12px; padding: 5px 9px; border-radius: 8px; white-space: nowrap; }
+.unit-count.active-unit-count { font-size: 11px; padding: 5px 9px; background: #edf4e5; color: #58723e; border: 1px solid #dce7cb; }
+.active-unit-summary { margin: 0 24px 22px; padding: 13px 15px; border-radius: 12px; background: #f5f8ee; border: 1px solid #e7eddc; display: flex; flex-wrap: wrap; align-items: center; gap: 5px 12px; }
+.next-lesson-label { font-size: 11px; color: #526c3f; display: flex; gap: 5px; align-items: center; }
+.active-unit-summary>strong { font-size: 13px; font-weight: 600; }
+.active-unit-summary>span:last-child { flex-basis: 100%; font-size: 12px; line-height: 1.9; color: #647356; }
+.lesson-path { padding: 14px 17px 29px; }
+.path-line { top: 43px; border-bottom-width: 2px; border-color: #dce5d0; }
+.lesson-node { width: 60px; height: 59px; box-shadow: 0 5px 0 #e3e8db; margin-bottom: 15px; }
+.lesson-node-wrap.current .lesson-node { width: 64px; height: 63px; background: #6d8f49; border-color: #6d8f49; box-shadow: 0 5px 0 #526e36, 0 0 0 7px #f0f5e8; }
+.lesson-node-wrap.completed .lesson-node { background: #e8f0df; }
+.lesson-node-wrap strong { font-size: 13px; line-height: 1.7; }
+.lesson-node-wrap small { font-size: 11px; margin-top: 5px; }
+.start-bubble { top: -21px; font-size: 10px; padding: 3px 9px; border-radius: 7px; }
+.unit-locked { background: #fafbf6; box-shadow: none; }
+.unit-locked .unit-heading { padding-bottom: 19px; }
+.curriculum-note { font-size: 12px; margin-top: 25px; line-height: 1.9; }
+.resume-banner { border-radius: 15px; padding: 17px 20px; }
+.resume-banner strong { font-size: 14px; }
+.resume-banner span { font-size: 12px; }
+
+/* Secondary cards now use the same reading scale as the main path. */
+.dashboard-aside { gap: 20px; }
+.daily-goal-card { padding: 23px 21px; border-radius: 23px; background: #fffefa; }
+.daily-goal-card .card-topline h3 { font-size: 15px; }
+.daily-goal-card .card-topline>span { font-size: 10px; }
+.goal-ring { width: 142px; height: 142px; padding: 10px; margin: 24px auto 19px; }
+.goal-ring>div { background: #fffefa; }
+.goal-ring strong { font-size: 35px; }
+.goal-ring strong small { font-size: 16px; }
+.goal-ring>div>span { font-size: 11px; }
+.daily-goal-card>p { font-size: 12px; line-height: 1.9; }
+.streak-summary { gap: 12px; }
+.streak-summary strong { font-size: 18px; }
+.streak-summary strong small { font-size: 11px; }
+.streak-summary p { font-size: 10px; line-height: 1.9; margin-top: 4px; }
+.week-calendar small { font-size: 10px; }
+.week-calendar span { font-size: 10px; height: 28px; width: 28px; }
+.review-nudge { border-radius: 21px; padding: 23px 21px; background: #f2eee2; }
+.review-nudge h3 { font-size: 16px; }
+.review-nudge p { font-size: 12px; line-height: 1.95; }
+.review-nudge .text-link { font-size: 12px; }
+.pronunciation-nudge { padding: 18px 16px; border-radius: 19px; gap: 12px; }
+.pronunciation-nudge strong { font-size: 13px; }
+.pronunciation-nudge small { font-size: 11px; margin-top: 5px; }
+.milestone-card { padding: 23px 20px; border-radius: 21px; }
+.milestone-card .card-topline h3 { font-size: 14px; }
+.milestone-card .card-topline>span { font-size: 10px; }
+.milestone-card>strong { font-size: 14px; }
+.milestone-card>p { font-size: 11px; line-height: 1.9; }
+.premium-nudge { padding: 23px 21px; border-radius: 21px; min-height: 206px; background: #eaf0df; }
+.premium-nudge>span { font-size: 11px; }
+.premium-nudge h3 { font-size: 21px; margin-top: 13px; }
+.premium-nudge p { font-size: 12px; line-height: 1.9; }
+.premium-nudge .text-link { font-size: 12px; }
+
+/* Completion starts with actual learning gains, followed by the next action. */
+.result-page { max-width: 820px; padding-top: 14px; }
+.result-celebration-top { display: flex; align-items: center; justify-content: center; gap: 18px; margin-bottom: 27px; text-align: left; }
+.result-celebration-top .celebration-art { height: 155px; gap: 3px; position: relative; }
+.result-celebration-top .celebration-art>svg { height: 150px; width: 142px; }
+.result-celebration-top .celebration-art>span { font-size: 24px; position: absolute; top: 25px; left: -10px; }
+.result-celebration-top .celebration-art>span:last-child { left: auto; right: -3px; top: 73px; font-size: 19px; }
+.result-celebration-top h1 { font-size: 29px; margin: 12px 0 11px; line-height: 1.6; }
+.result-celebration-top p { font-size: 13px; line-height: 1.9; color: var(--muted); }
+.result-celebration-top .eyebrow { font-size: 10px; letter-spacing: 1.8px; }
+.result-stats { gap: 17px; margin: 0 0 21px; }
+.result-stats>div { border-radius: 19px; padding: 22px 12px; background: #fffefa; gap: 7px; }
+.result-stats>div:first-child { background: #f9f2d9; border-color: #e7d9ad; }
+.result-stats strong { font-size: 36px; }
+.result-stats span { font-size: 12px; }
+.result-page>.retry-result { font-size: 12px!important; margin: 0 0 21px!important; line-height: 1.9; }
+.result-message { border-radius: 16px; background: #ecf3e3; padding: 19px 23px; }
+.result-message strong { font-size: 14px; }
+.result-message p { font-size: 12px; line-height: 1.9; }
+.result-actions { gap: 12px; margin-top: 25px; margin-bottom: 30px; }
+.result-actions .button { font-size: 14px; }
+.result-review { padding: 26px; border-radius: 20px; background: #fffefa; }
+.result-review h3 { font-size: 16px; gap: 9px; }
+.result-review>p { font-size: 13px; line-height: 1.9; margin: 13px 0; }
+.result-word { padding: 15px 0; gap: 13px; }
+.result-word strong { font-size: 15px; }
+.result-word>span { font-size: 13px; }
+.result-word .learned-check { background: #e9f2df; color: #557842; width: 25px; height: 25px; display: grid; place-items: center; border-radius: 50%; flex-shrink: 0; }
+.result-rules { margin-top: 17px; border-top: 1px solid var(--line); padding-top: 6px; text-align: left; }
+.result-rules summary { display: flex; align-items: center; justify-content: space-between; min-height: 44px; color: #5d7051; cursor: pointer; font-size: 12px; list-style: none; }
+.result-rules[open] summary>svg { transform: rotate(180deg); }
+.result-rules p { font-size: 12px; line-height: 2; color: var(--muted); padding: 4px 0; }
+
+/* Supporting pages share readable content and larger action targets. */
+.modal { padding: 29px; border-radius: 24px; }
+.modal-description { font-size: 14px; }
+.knowledge-intro p { font-size: 14px; line-height: 2; }
+.knowledge-intro>span { font-size: 13px; }
+.intro-vocabulary strong { font-size: 18px; }
+.intro-vocabulary span, .intro-vocabulary small { font-size: 13px; }
+.intro-vocabulary-heading h3, .lesson-intro .check-label { font-size: 13px; }
+.lesson-goal { line-height: 1.9; }
+.tabs { gap: 25px; }
+.tabs button { font-size: 14px; min-height: 49px; }
+[role="tabpanel"]:focus-visible { outline: 2px solid #347eab; outline-offset: 7px; border-radius: 12px; }
+.review-overview>div { border-radius: 18px; }
+.review-overview small { font-size: 12px; }
+.review-plan { border-radius: 22px; }
+.review-plan p, .explanation-card p { font-size: 13px; line-height: 1.95; }
+.review-word strong { font-size: 18px; }
+.review-word>span { font-size: 13px; }
+.review-status>small, .mastery { font-size: 11px; }
+.review-record summary { width: 44px; height: 44px; }
+.review-record[open]>div { font-size: 12px; min-width: 290px; }
+.scenario-subtitle { font-size: 11px; }
+.scenario-card p { font-size: 13px; }
+.scene-goal { font-size: 11px; }
+.coach-settings>span { font-size: 14px; }
+.segmented button { font-size: 13px; min-height: 44px; }
+.coach-welcome p { font-size: 14px; }
+.coach-start strong { font-size: 15px; }
+.coach-start p { font-size: 12px; line-height: 1.9; }
+.chat-tools .button { font-size: 12px; min-height: 42px; }
+.chat-top h2 { font-size: 17px; }
+.chat-top small, .chat-quota { font-size: 12px; }
+.chat-mode-banner { font-size: 12px; }
+.message-bubble { font-size: 15px; }
+.message-content>small { font-size: 11px; }
+.message-actions button { font-size: 12px; min-height: 40px; }
+.message-actions>span { font-size: 11px; }
+.message-translation, .correction p { font-size: 13px; }
+.correction summary, .expression-details summary { font-size: 12px; min-height: 30px; }
+.expression-row strong { font-size: 14px; }
+.expression-row small { font-size: 12px; }
+.chat-composer input { font-size: 14px; min-height: 44px; }
+.send-button { width: 44px; height: 44px; }
+.chat-composer>small { font-size: 11px; }
+.pronunciation-list>button { padding: 14px 12px; }
+.pronunciation-list>button strong { font-size: 15px; }
+.pronunciation-list>button small { font-size: 12px; }
+.pronunciation-list select, .recorder-card>p { font-size: 14px; }
+.pronunciation-tip strong, .pronunciation-tip p { font-size: 13px; }
+.record-zone>strong { font-size: 15px; }
+.record-zone p { font-size: 13px; }
+.recorder-card>.privacy-note { font-size: 12px; }
+.profile-card p { font-size: 13px; }
+.profile-card small { font-size: 12px; }
+.profile-stats span { font-size: 12px; }
+.profile-grid .muted, .language-progress>div>span { font-size: 12px; }
+.language-progress strong { font-size: 15px; }
+.language-progress strong small { font-size: 12px; }
+.achievement strong { font-size: 14px; }
+.achievement p { font-size: 12px; }
+.achievement small { font-size: 11px; }
+.profile-premium strong { font-size: 15px; }
+.profile-premium small { font-size: 12px; }
+.premium-plan li { font-size: 14px; }
+.premium-plan>.privacy-note { font-size: 12px; }
+.premium-comparison table { font-size: 13px; }
+.premium-comparison>p { font-size: 12px; }
+.onboarding-panel>p { font-size: 14px; }
+.onboarding-option strong { font-size: 15px; }
+.onboarding-option small { font-size: 12px; }
+.onboarding-panel>.onboarding-footnote { font-size: 11px; }
+
+@media (min-width: 1600px) {
+  .dashboard-grid { grid-template-columns: minmax(0, 1fr) 310px; gap: 30px; }
+  .learning-hero { min-height: 370px; }
+  .hero-copy { padding: 35px; }
+  .hero-copy h2 { font-size: 39px; }
+  .hero-copy p { font-size: 14px; }
+}
+@media (max-width: 1190px) {
+  .dashboard-grid { grid-template-columns: minmax(0, 1fr) 258px; gap: 22px; }
+  .welcome-row h1 { font-size: 27px; }
+  .hero-copy { width: 66%; padding: 29px 24px; }
+  .hero-copy h2 { font-size: 30px; }
+  .hero-copy p { font-size: 12px; }
+  .hero-copy>small { font-size: 9px; }
+  .learning-hero>.garden-scene { right: -12px; width: 49%; }
+  .hero-language-caption { display: none; }
+  .unit-heading { padding: 22px 19px; gap: 12px; }
+  .unit-heading h3 { font-size: 15px; }
+  .unit-heading p { font-size: 11px; }
+  .active-unit-summary { margin-left: 19px; margin-right: 19px; }
+  .lesson-node-wrap strong { font-size: 12px; }
+  .lesson-node-wrap small { font-size: 10px; }
+  .daily-goal-card { padding: 21px 16px; }
+  .daily-goal-card .card-topline>span { display: none; }
+  .week-calendar { gap: 4px; }
+  .week-calendar span { width: 26px; height: 26px; }
+}
+@media (max-width: 1000px) {
+  .dashboard-grid { grid-template-columns: minmax(0, 1fr); }
+  .hero-copy { width: 60%; padding: 30px; }
+  .hero-copy h2 { font-size: 35px; }
+  .hero-copy p { font-size: 13px; }
+  .hero-copy>small { font-size: 11px; }
+  .learning-hero>.garden-scene { width: 48%; max-width: 370px; right: 0; }
+  .unit-heading h3 { font-size: 17px; }
+  .unit-heading p { font-size: 12px; }
+  .lesson-node-wrap strong { font-size: 13px; }
+  .lesson-node-wrap small { font-size: 11px; }
+  .dashboard-aside { gap: 20px; }
+}
+@media (max-width: 760px) {
+  .main-content { padding: 27px 20px 98px; }
+  .topbar { height: 74px; padding: 0 20px; gap: 12px; }
+  .mobile-brand { gap: 7px; }
+  .mobile-brand strong { font-size: 21px; }
+  .language-switcher { min-height: 43px; padding: 7px 10px; gap: 7px; font-size: 13px; }
+  .topbar-stats { gap: 13px; }
+  .topbar-stats>span { font-size: 13px; }
+  .topbar-stats small { font-size: 10px; }
+  .topbar-xp { display: none!important; }
+  .mobile-nav { padding-top: 9px; padding-bottom: max(10px, env(safe-area-inset-bottom)); background: #fffefaed; }
+  .mobile-nav>button { min-height: 50px; font-size: 12px; gap: 5px; border-radius: 14px; }
+  .mobile-nav>button.active { background: #edf3e3; color: #3e673f; }
+  .mobile-nav>button>svg { height: 22px; width: 22px; }
+  .welcome-row { margin-bottom: 23px; }
+  .welcome-row .eyebrow { font-size: 9px; letter-spacing: 1.8px; }
+  .welcome-row h1 { font-size: 24px; line-height: 1.55; margin: 9px 0 10px; letter-spacing: -.7px; }
+  .welcome-row p { font-size: 12px; line-height: 1.9; }
+  .heading-spark { margin-left: 5px; font-size: 20px; }
+  .learning-hero { min-height: 337px; border-radius: 24px; }
+  .hero-copy { width: 100%; padding: 26px 24px 26px; }
+  .hero-pill { font-size: 10px; }
+  .hero-copy h2 { font-size: 30px; margin: 18px 0 17px; line-height: 1.53; letter-spacing: .2px; position: relative; z-index: 2; }
+  .hero-copy p { font-size: 12px; max-width: 185px; line-height: 2; margin-bottom: 24px; }
+  .hero-copy .button { font-size: 14px; min-height: 48px; padding: 12px 19px; border-radius: 12px; }
+  .hero-copy>small { font-size: 10px; max-width: 270px; white-space: normal; line-height: 1.8; margin-top: 16px; }
+  .learning-hero>.garden-scene { width: 173px; right: -16px; bottom: 23px; height: 194px; }
+  .learning-hero .hero-mascot { width: 78%; height: 90%; left: 14%; bottom: 0; }
+  .learning-hero .note-a { display: none; }
+  .learning-hero .note-b { font-size: 9px; padding: 6px 8px; top: 21%; right: 6%; }
+  .learning-hero .note-c { font-size: 11px; padding: 6px 9px; left: 1%; bottom: 13%; }
+  .learning-hero .scene-flower { bottom: 7%; }
+  .mobile-study-summary { display: block; border: 1px solid #dfe7d5; background: #fffefa; padding: 17px 17px 8px; border-radius: 18px; margin-top: 18px; box-shadow: 0 3px 14px #58713604; }
+  .mobile-summary-top { display: flex; align-items: center; gap: 8px; margin-bottom: 13px; }
+  .mobile-summary-top>span:first-child { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; }
+  .mobile-summary-top>span:first-child svg { color: #729151; }
+  .mobile-summary-top>strong { font-size: 17px; margin-left: 6px; line-height: 1.5; }
+  .mobile-summary-top>strong>small { font-size: 11px; font-weight: 400; color: #66765b; }
+  .mobile-summary-streak { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; margin-left: auto; padding-left: 11px; border-left: 1px solid #e5eadb; }
+  .mobile-summary-streak svg { color: #aa7b3d; }
+  .mobile-study-summary .progress-track { height: 6px; }
+  .mobile-summary-bottom { display: flex; justify-content: space-between; align-items: center; gap: 6px; margin-top: 3px; }
+  .mobile-summary-bottom>span { font-size: 10px; color: #627456; line-height: 1.8; }
+  .mobile-summary-bottom>button { display: inline-flex; align-items: center; gap: 4px; border: 0; background: none; padding: 9px 0 9px 7px; min-height: 44px; color: #436b3f; font-size: 11px; white-space: nowrap; }
+  .section-heading { margin: 29px 0 18px; }
+  .section-heading h2 { font-size: 19px; }
+  .section-heading p { font-size: 12px; line-height: 1.9; }
+  .subtle-tag { font-size: 11px; margin-left: 5px; padding: 4px 8px; }
+  .unit-list { gap: 18px; }
+  .unit-card { border-radius: 21px; }
+  .unit-heading { padding: 21px 18px 18px; gap: 12px; }
+  .unit-art { height: 45px; width: 45px; min-width: 45px; border-radius: 13px; }
+  .unit-number { font-size: 9px; margin-bottom: 5px; }
+  .unit-heading h3 { font-size: 15px; line-height: 1.65; }
+  .unit-heading p { font-size: 11px; margin-top: 4px; }
+  .unit-count { font-size: 11px; padding: 4px 7px; }
+  .unit-count.active-unit-count { font-size: 10px; padding: 4px 6px; }
+  .active-unit-summary { margin: 0 18px 26px; padding: 12px; gap: 6px 9px; }
+  .next-lesson-label { font-size: 10px; }
+  .active-unit-summary>strong { font-size: 12px; }
+  .active-unit-summary>span:last-child { font-size: 11px; line-height: 1.9; }
+  .lesson-path { padding: 11px 9px 25px; gap: 4px; }
+  .lesson-node { height: 54px; width: 55px; }
+  .lesson-node-wrap.current .lesson-node { height: 58px; width: 59px; }
+  .lesson-node-wrap strong { font-size: 11px; line-height: 1.8; }
+  .lesson-node-wrap small { font-size: 10px; line-height: 1.9; }
+  .start-bubble { font-size: 9px; top: -22px; padding: 3px 7px; }
+  .path-line { top: 36px; }
+  .curriculum-note { font-size: 11px; gap: 7px; line-height: 1.9; align-items: flex-start; }
+  .dashboard-aside { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .dashboard-aside>.daily-goal-card { display: none; }
+  .dashboard-aside>.review-nudge { grid-column: auto; grid-row: auto; }
+  .dashboard-aside>.premium-nudge { grid-column: auto; grid-row: auto; }
+  .dashboard-aside>.pronunciation-nudge { grid-column: 1/-1; grid-row: auto; order: 3; }
+  .review-nudge { padding: 19px 15px; border-radius: 19px; }
+  .review-nudge h3 { font-size: 14px; line-height: 1.65; }
+  .review-nudge p { font-size: 12px; line-height: 1.9; }
+  .review-nudge .text-link { font-size: 11px; }
+  .premium-nudge { padding: 19px 15px; border-radius: 19px; min-height: 217px; }
+  .premium-nudge>span { font-size: 10px; }
+  .premium-nudge h3 { font-size: 18px; }
+  .premium-nudge p { font-size: 12px; }
+  .premium-nudge .text-link { font-size: 11px; }
+  .premium-mini-mascot { opacity: .65; right: -15px; bottom: -17px; width: 82px; }
+  .pronunciation-nudge { padding: 18px; gap: 12px; }
+  .pronunciation-nudge strong { font-size: 14px; }
+  .pronunciation-nudge small { font-size: 12px; }
+  .site-footer { font-size: 10px; gap: 12px; line-height: 1.9; }
+  .page-heading { margin-bottom: 25px; gap: 10px; }
+  .page-heading h1 { font-size: 25px; margin-top: 10px; line-height: 1.6; }
+  .page-heading p { font-size: 13px; line-height: 1.9; }
+  .page-heading .eyebrow { font-size: 9px; }
+  .page-heading>.button { font-size: 11px; min-height: 44px; padding: 9px 11px; }
+  .modal { padding: 25px 20px; border-radius: 22px; }
+  .modal-heading h2 { font-size: 20px; }
+  .modal-description { font-size: 13px; }
+  .knowledge-intro p { font-size: 13px; line-height: 1.95; }
+  .intro-vocabulary strong { font-size: 16px; }
+  .intro-vocabulary span, .intro-vocabulary small { font-size: 12px; }
+  .intro-vocabulary-heading h3, .lesson-intro .check-label { font-size: 12px; }
+  .lesson-goal { font-size: 14px; line-height: 1.9; }
+  .lesson-intro .privacy-note { font-size: 12px; }
+  .language-manager strong { font-size: 15px; }
+  .language-manager strong small, .language-manager>button>div>span { font-size: 12px; }
+  .result-page { padding-top: 0; }
+  .result-celebration-top { flex-direction: column; text-align: center; gap: 5px; margin-bottom: 22px; }
+  .result-celebration-top .celebration-art { height: 123px; }
+  .result-celebration-top .celebration-art>svg { height: 124px; width: 122px; }
+  .result-celebration-top h1 { font-size: 25px; margin: 10px 0; line-height: 1.6; }
+  .result-celebration-top .eyebrow { font-size: 8px; letter-spacing: 1.5px; }
+  .result-celebration-top p { font-size: 12px; }
+  .result-stats { gap: 9px; margin: 0 0 18px; }
+  .result-stats>div { border-radius: 15px; padding: 19px 5px; gap: 8px; }
+  .result-stats strong { font-size: 29px; }
+  .result-stats span { font-size: 11px; line-height: 1.8; }
+  .result-stats svg { height: 21px; }
+  .result-page>.retry-result { font-size: 11px!important; }
+  .result-message { padding: 17px 15px; gap: 12px; border-radius: 15px; }
+  .result-message strong { font-size: 13px; }
+  .result-message p { font-size: 11px; }
+  .result-actions { margin: 22px 0 25px; gap: 12px; }
+  .result-actions .button { font-size: 14px; }
+  .result-actions>.button:first-child { min-height: 51px; }
+  .result-review { padding: 22px 19px; }
+  .result-review h3 { font-size: 15px; line-height: 1.8; }
+  .result-review>p { font-size: 13px; }
+  .result-word { flex-wrap: wrap; gap: 7px 12px; }
+  .result-word strong { font-size: 14px; }
+  .result-word>span { font-size: 12px; }
+  .result-rules summary, .result-rules p { font-size: 12px; }
+  .tabs { gap: 16px; }
+  .tabs button { font-size: 12px; min-height: 48px; }
+  .review-overview>div { padding: 17px 11px; }
+  .review-overview small { font-size: 11px; }
+  .review-plan p, .explanation-card p { font-size: 12px; }
+  .review-word strong { font-size: 16px; }
+  .review-word>span { font-size: 12px; }
+  .review-status>small, .mastery { font-size: 10px; }
+  .review-record summary { width: 32px; height: 44px; }
+  .review-row { gap: 9px; padding: 15px 12px; }
+  .review-row .language-mark { display: none; }
+  .coach-welcome { border-radius: 22px; padding: 23px 17px; gap: 13px; }
+  .coach-welcome h2 { font-size: 21px; }
+  .coach-welcome p { font-size: 12px; }
+  .coach-welcome .tag { font-size: 11px; }
+  .segmented button { font-size: 11px; min-height: 44px; padding: 10px 6px; }
+  .scenario-card { padding: 19px 15px; border-radius: 18px; min-height: 257px; }
+  .scenario-card h3 { font-size: 16px; line-height: 1.65; }
+  .scenario-card p { font-size: 12px; line-height: 1.9; }
+  .scenario-subtitle, .scene-goal { font-size: 11px; }
+  .coach-start { padding: 22px 19px; border-radius: 18px; }
+  .coach-start strong { font-size: 14px; }
+  .coach-start p { font-size: 12px; }
+  .coach-start .button { font-size: 14px; }
+  .demo-explanation { font-size: 12px; }
+  .coach-page>.privacy-note { font-size: 11px; }
+  .chat-top>.icon-button { width: 42px; min-width: 42px; height: 44px; }
+  .chat-top { padding: 14px 10px; gap: 8px; }
+  .chat-top h2 { font-size: 15px; }
+  .chat-top small { font-size: 10px; }
+  .chat-quota { font-size: 11px; }
+  .chat-mode-banner { font-size: 11px; line-height: 1.9; }
+  .chat-messages { max-height: calc(100dvh - 405px); }
+  .message-bubble { font-size: 14px; padding: 13px 14px; }
+  .message-content>small { font-size: 10px; }
+  .message-actions { flex-wrap: wrap; gap: 5px 11px; }
+  .message-actions button { font-size: 11px; min-height: 40px; }
+  .message-actions>span { font-size: 10px; }
+  .message-translation { font-size: 12px; }
+  .correction summary, .expression-details summary { font-size: 12px; }
+  .correction p { font-size: 12px; }
+  .correction strong { font-size: 12px; }
+  .expression-row strong { font-size: 13px; }
+  .expression-row small { font-size: 12px; }
+  .chat-tools .button { font-size: 11px; min-height: 44px; padding: 8px 5px; }
+  .chat-composer input { font-size: 13px; min-height: 44px; }
+  .chat-composer>small { font-size: 10px; line-height: 1.8; }
+  .chat-summary h2 { font-size: 19px; }
+  .chat-summary>p { font-size: 13px; }
+  .pronunciation-list { border-radius: 19px; padding: 21px; }
+  .pronunciation-list h3 { font-size: 15px; }
+  .pronunciation-list select { font-size: 13px; }
+  .recorder-card { padding: 25px 20px; border-radius: 21px; }
+  .recorder-card>.tag { font-size: 11px; }
+  .recorder-card>p { font-size: 14px; }
+  .audio-actions>.button { font-size: 13px; padding: 12px 14px; }
+  .pronunciation-tip strong, .pronunciation-tip p { font-size: 13px; }
+  .record-zone>strong { font-size: 14px; }
+  .record-zone p { font-size: 12px; }
+  .recorder-card>.privacy-note { font-size: 12px; }
+  .profile-card p { font-size: 12px; }
+  .profile-card small { font-size: 11px; }
+  .profile-card>.button { min-height: 44px; font-size: 13px; }
+  .profile-stats span { font-size: 10px; }
+  .profile-grid .muted, .language-progress>div>span { font-size: 12px; }
+  .content-card h2 { font-size: 17px; }
+  .content-card .text-link { font-size: 12px; }
+  .achievement strong { font-size: 13px; }
+  .achievement p { font-size: 11px; }
+  .profile-premium strong { font-size: 14px; }
+  .profile-premium small { font-size: 12px; }
+  .premium-plan li { font-size: 13px; }
+  .premium-plan>.privacy-note { font-size: 12px; }
+  .premium-comparison table { font-size: 11px; }
+  .premium-comparison th, .premium-comparison td { padding: 15px 7px; }
+  .premium-comparison>p { font-size: 12px; }
+  .onboarding-panel>p { font-size: 13px; }
+  .onboarding-option { min-height: 84px; }
+  .onboarding-option strong { font-size: 13px; line-height: 1.7; }
+  .onboarding-option small { font-size: 11px; line-height: 1.8; }
+  .onboarding-panel>.onboarding-footnote { font-size: 10px; }
+  .onboarding-actions>.button { font-size: 13px; }
+  .onboarding-story>p { font-size: 12px; }
+  .onboarding-steps small { font-size: 12px; }
+}
+@media (max-width: 370px) {
+  .main-content { padding-left: 16px; padding-right: 16px; }
+  .topbar { padding: 0 16px; gap: 9px; }
+  .mobile-brand { gap: 5px; }
+  .mobile-brand strong { font-size: 19px; }
+  .welcome-row h1 { font-size: 22px; }
+  .hero-copy { padding-left: 21px; padding-right: 21px; }
+  .hero-copy h2 { font-size: 28px; }
+  .hero-copy p { max-width: 167px; }
+  .learning-hero>.garden-scene { width: 157px; right: -20px; }
+  .hero-copy>small { font-size: 9px; }
+  .unit-heading { gap: 10px; padding-left: 15px; padding-right: 15px; }
+  .unit-heading h3 { font-size: 14px; }
+  .unit-heading p { font-size: 10px; }
+  .unit-count.active-unit-count { font-size: 9px; }
+  .unit-art { width: 41px; min-width: 41px; }
+  .lesson-node-wrap strong { font-size: 10px; }
+  .lesson-node-wrap small { font-size: 9px; }
+  .mobile-summary-bottom>span { font-size: 9px; }
+  .result-stats span { font-size: 10px; }
+  .scenario-card { padding: 17px 13px; }
+  .scenario-card h3 { font-size: 15px; }
+  .scenario-card p { font-size: 11px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .unit-card, .scenario-card, .pronunciation-nudge { transition: border-color .2s ease, box-shadow .2s ease; }
+  .scenario-card:hover, .pronunciation-nudge:hover { box-shadow: 0 6px 24px #3143270b; }
+}
