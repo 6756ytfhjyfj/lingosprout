@@ -42,5 +42,5 @@ export interface AIReply { text: string; translation: string; correction: ChatCo
 export interface ChatMessage extends AIReply { id: string; role: 'user' | 'assistant'; at: string; }
 export type Scene = 'meet' | 'restaurant' | 'transport' | 'shopping' | 'hotel';
 export interface ChatSession { id: string; language: Language; scene: Scene; difficulty: Level; messages: ChatMessage[]; demo: boolean; ended: boolean; summary?: AIReply; }
-export interface Subscription { status: 'free' | 'active'; source: 'none' | 'demo' | 'payment'; expiresAt: string | null; }
-export interface ServerStatus { demo: boolean; authenticated: boolean; email?: string; subscription: Subscription; used: number; limit: number; freeLimit:number; premiumLimit:number; remaining: number; resetLabel: string; canDemoSubscribe: boolean; priceLabel: string; authConfigured: boolean; }
+export interface Subscription { status: 'free' | 'active'; source: 'none' | 'demo' | 'payment' | 'admin'; expiresAt: string | null; }
+export interface ServerStatus { demo: boolean; authenticated: boolean; email?: string; role?:import('./account-types').AccountRole; titles?:import('./account-types').AccountTitle[]; siteTitle?:string; subscription: Subscription; used: number; limit: number; freeLimit:number; premiumLimit:number; remaining: number; resetLabel: string; canDemoSubscribe: boolean; priceLabel: string; authConfigured: boolean; }

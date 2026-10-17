@@ -5,6 +5,7 @@ import { generateReply, opening } from '@/server/ai';
 import { checkOrigin, identity, readBody } from '@/server/identity';
 import { AppError, hasPremium, quota, quotaDay, withUserStore } from '@/server/store';
 import { failure, json } from '@/server/http';
+import {publicSettings} from '@/server/settings';
 export const runtime='nodejs';export const maxDuration=45;
 const settings=z.object({language:z.enum(['en','ja','ko']),scene:z.enum(['meet','restaurant','transport','shopping','hotel']),difficulty:z.enum(['zero','some'])});
 const message=z.object({action:z.enum(['message','hint','summary']),sessionId:z.string().uuid(),requestId:z.string().uuid(),text:z.string().trim().max(1000).default('')});
@@ -21,12 +22,13 @@ export async function POST(request:Request){
   let reserved:{userId:string;requestId:string}|null=null;
   try {
     checkOrigin(request);const body=await readBody(request);const user=await identity();
-    if(process.env.DEEPSEEK_API_KEY && !user.authenticated)throw new AppError(401,'真实 AI 陪练需要登录账户。请到“我的”登录；游客课程仍可免费学习。');
+    const runtimeConfig=await publicSettings();
+    if(runtimeConfig.keyConfigured && !user.authenticated)throw new AppError(401,'真实 AI 陪练需要登录账户。请到“我的”登录；游客课程仍可免费学习。');
     if(body.action==='start') {
       const config=settings.parse(body);
       const session=await withUserStore(user.id,s=>{
         const now=Date.now();s.calls=s.calls.filter(t=>t>now-60000);if(s.calls.length>=12)throw new AppError(429,'操作有点频繁，请一分钟后再试。');s.calls.push(now);
-        const id=randomUUID();const session:ChatSession={id,...config,messages:[{...opening(config.language,config.scene),id:randomUUID(),role:'assistant',at:new Date().toISOString()}],demo:!process.env.DEEPSEEK_API_KEY,ended:false};
+        const id=randomUUID();const session:ChatSession={id,...config,messages:[{...opening(config.language,config.scene),id:randomUUID(),role:'assistant',at:new Date().toISOString()}],demo:!runtimeConfig.keyConfigured,ended:false};
         if(!hasPremium(s))s.sessions={};
         const ids=Object.keys(s.sessions);if(ids.length>=50)delete s.sessions[ids[0]];
         s.sessions[id]=session;return session;

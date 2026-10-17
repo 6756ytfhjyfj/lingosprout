@@ -26,6 +26,7 @@ export default function App(){
   const mainRef=useRef<HTMLElement>(null);
   const notify=useCallback((message:string)=>setToast(message),[]);
   const refreshStatus=useCallback(()=>{api<ServerStatus>('/api/status').then(setStatus).catch(e=>notify((e as Error).message));},[notify]);
+  useEffect(()=>{if(status?.siteTitle)document.title=`${status.siteTitle} · 每天一点，世界近一点`;},[status?.siteTitle]);
   useEffect(()=>{const loaded=repository.load();setState(loaded.state);if(loaded.warning)setToast(loaded.warning);refreshStatus();
     const hash=location.hash.slice(1);if(['learn','review','coach','profile','pronunciation','premium'].includes(hash))setView(hash as View);
     const syncHash=()=>{const next=location.hash.slice(1);if(['learn','review','coach','profile','pronunciation','premium','result'].includes(next))setView(next as View);};

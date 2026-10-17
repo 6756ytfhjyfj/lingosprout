@@ -1,15 +1,19 @@
 import { identity } from '@/server/identity';
-import { authConfigured, configuredLimits, hasPremium, isProduction, quota, withUserStore } from '@/server/store';
+import { authConfigured, hasPremium, quota, withUserStore } from '@/server/store';
 import { json, failure } from '@/server/http';
+import { publicSettings } from '@/server/settings';
+import {AppError} from '@/server/errors';
 export const runtime='nodejs';export const dynamic='force-dynamic';
 export async function GET(){
+  let settings;
   try {
-    const user=await identity();const status=await withUserStore(user.id,s=>({subscription:hasPremium(s)?s.subscription:{status:'free',source:'none',expiresAt:null},...quota(s)}));
-    return json({...status,...configuredLimits(),demo:!process.env.DEEPSEEK_API_KEY,authenticated:user.authenticated,email:user.email,canDemoSubscribe:!user.authenticated && !isProduction() && process.env.ENABLE_DEMO_SUBSCRIPTIONS==='true',
+    settings=await publicSettings();
+    const user=await identity();const status=await withUserStore(user.id,s=>({subscription:hasPremium(s)?s.subscription:{status:'free',source:'none',expiresAt:null},...quota(s)}),true);
+    return json({...status,freeLimit:settings.freeLimit,premiumLimit:settings.premiumLimit,siteTitle:settings.siteTitle,demo:!settings.keyConfigured,authenticated:user.authenticated,email:user.email,role:'role' in user?user.role:undefined,titles:'titles' in user?user.titles:[],canDemoSubscribe:false,
       priceLabel:process.env.PREMIUM_PRICE_LABEL??'',resetLabel:`每日 00:00 重置（${process.env.AI_QUOTA_TIMEZONE??'Asia/Shanghai'}）`,authConfigured:authConfigured()});
   } catch(error) {
-    if(isProduction()) return json({subscription:{status:'free',source:'none',expiresAt:null},used:0,...configuredLimits(),limit:configuredLimits().freeLimit,remaining:configuredLimits().freeLimit,
-      demo:!process.env.DEEPSEEK_API_KEY,authenticated:false,canDemoSubscribe:false,priceLabel:process.env.PREMIUM_PRICE_LABEL??'',resetLabel:'每日 00:00 重置（Asia/Shanghai）',authConfigured:authConfigured()});
+    if(settings&&error instanceof AppError&&error.status===401) return json({subscription:{status:'free',source:'none',expiresAt:null},used:0,freeLimit:settings.freeLimit,premiumLimit:settings.premiumLimit,limit:settings.freeLimit,remaining:settings.freeLimit,siteTitle:settings.siteTitle,
+      demo:!settings.keyConfigured,authenticated:false,canDemoSubscribe:false,priceLabel:'',resetLabel:'每日 00:00 重置（Asia/Shanghai）',authConfigured:authConfigured()});
     return failure(error);
   }
 }

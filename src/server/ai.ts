@@ -2,6 +2,7 @@ import 'server-only';
 import { languages } from '../lib/curriculum';
 import type { AIReply, ChatSession, Language, Scene } from '../lib/types';
 import {callDeepSeek} from './deepseek';
+import {providerConfig} from './settings';
 
 export const scenes = {
   meet:{title:'日常认识',goal:'打招呼并介绍自己的名字'},
@@ -48,7 +49,8 @@ export function demoReply(session:ChatSession,action:ChatAction,text:string):AIR
   return {text:reply,translation,correction,phrases:[{target:sample,meaning}],improvements:[]};
 }
 export async function generateReply(session:ChatSession,action:ChatAction,text:string):Promise<AIReply> {
-  if(!process.env.DEEPSEEK_API_KEY) return demoReply(session,action,text);
+  const config=await providerConfig();
+  if(!config.apiKey) return demoReply(session,action,text);
   const messages=[{role:'system',content:systemPrompt(session,action)},...session.messages.slice(-20).map(m=>({role:m.role,content:m.text})),{role:'user',content:action==='message'?text:action==='hint'?'请给我一个能继续当前场景的简短表达提示。':'请总结这次练习。'}];
-  return callDeepSeek({apiKey:process.env.DEEPSEEK_API_KEY,model:process.env.DEEPSEEK_MODEL??'deepseek-flash',messages});
+  return callDeepSeek({apiKey:config.apiKey,model:config.model,messages});
 }

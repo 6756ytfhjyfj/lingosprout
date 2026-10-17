@@ -1,0 +1,23 @@
+'use client';
+import {useEffect,useRef,useState} from 'react';
+import {ArrowRight,Mail,QrCode,RefreshCw,ShieldCheck,Sprout} from 'lucide-react';
+import {api} from '@/lib/client-api';
+import {Button} from './Primitives';
+
+export function AccountAccess({onSuccess}:{onSuccess:()=>void}) {
+ const [mode,setMode]=useState<'login'|'signup'>('login');const [email,setEmail]=useState('');const [password,setPassword]=useState('');const [notice,setNotice]=useState('');const [busy,setBusy]=useState(false);const [qr,setQr]=useState(false);
+ async function submit(){setBusy(true);setNotice('');try{const result=await api<{message:string}>('/api/auth',{action:mode,email,password});setPassword('');setNotice(result.message);onSuccess();}catch(e){setNotice((e as Error).message);}finally{setBusy(false);}}
+ return <div className="account-access"><div className="account-mode" aria-label="账户操作"><button aria-pressed={mode==='login'&&!qr} onClick={()=>{setMode('login');setQr(false);}}>邮箱登录</button><button aria-pressed={mode==='signup'&&!qr} onClick={()=>{setMode('signup');setQr(false);}}>注册账户</button><button aria-pressed={qr} onClick={()=>setQr(true)}><QrCode size={16}/>扫码登录</button></div>
+ {qr?<QRLogin onSuccess={onSuccess}/>:<form className="settings-form" onSubmit={e=>{e.preventDefault();submit();}}><label>邮箱<input type="email" required maxLength={254} autoComplete="email" value={email} onChange={e=>setEmail(e.target.value)}/></label><label>密码<input type="password" required minLength={8} maxLength={128} autoComplete={mode==='signup'?'new-password':'current-password'} value={password} onChange={e=>setPassword(e.target.value)}/></label><Button loading={busy} type="submit">{mode==='signup'?'注册并绑定当前设备':'登录账户'}<ArrowRight size={17}/></Button><p className="privacy-note">{mode==='signup'?'密码至少 8 位。邮箱目前仅用作登录名，尚未验证所有权。每个浏览器设备累计最多注册 10 个账号；退出或停用账号不会重置次数。':'登录后绑定当前浏览器设备。你可以在“我的”中查看设备并退出其他设备。'}</p></form>}
+ {notice?<p className="notice" role="status">{notice}</p>:null}</div>;
+}
+function QRLogin({onSuccess}:{onSuccess:()=>void}) {
+ const [qr,setQr]=useState<{id:string;url:string;expiresAt:string;code:string}|null>(null);const [image,setImage]=useState('');const [status,setStatus]=useState('');const [busy,setBusy]=useState(false);const [ended,setEnded]=useState(false);const successRef=useRef(onSuccess);successRef.current=onSuccess;
+ async function start(){setBusy(true);setQr(null);setImage('');setEnded(false);setStatus('');try{const result=await api<NonNullable<typeof qr>>('/api/scan',{action:'start'});const QRCode=await import('qrcode');setImage(await QRCode.toDataURL(result.url,{width:280,margin:2,color:{dark:'#244e3c',light:'#ffffff'}}));setQr(result);setStatus('等待已登录的手机扫码确认');}catch(e){setStatus((e as Error).message);}finally{setBusy(false);}}
+ useEffect(()=>{if(!qr)return;let alive=true;let timer:ReturnType<typeof setTimeout>;const poll=async()=>{if(!alive)return;if(Date.now()>Date.parse(qr.expiresAt)){setEnded(true);setStatus('二维码已过期，请重新生成。');return;}try{const result=await api<{status:string}>('/api/scan',{action:'poll',id:qr.id});if(!alive)return;if(result.status==='authenticated'){setStatus('登录成功，正在进入。');successRef.current();return;}if(['expired','denied','consumed'].includes(result.status)){setEnded(true);setStatus(result.status==='denied'?'此次登录已被拒绝，请重新生成。':'二维码已过期或已使用。');return;}}catch(e){if(alive)setStatus((e as Error).message);}if(alive)timer=setTimeout(poll,2000);};timer=setTimeout(poll,2000);return()=>{alive=false;clearTimeout(timer);};},[qr]);
+ return <div className="qr-login">{image&&!ended?<><img src={image} alt="用 LingoSproutSCAN 扫描此登录二维码" width={240} height={240}/><p>核对确认码 <strong className="confirmation-code">{qr?.code}</strong></p></>:<div className="qr-placeholder"><QrCode size={72}/><span>用手机确认，在电脑继续</span></div>}<p role="status">{status||'二维码有效期 2 分钟，一次确认只用于本次登录。'}</p><Button variant="secondary" loading={busy} onClick={start}><RefreshCw size={17}/>{qr?'刷新二维码':'生成登录二维码'}</Button><p className="privacy-note">手机打开 <a href="/scan" target="_blank" rel="noreferrer">LingoSproutSCAN</a>，登录后扫码。只确认你自己发起的登录请求。</p></div>;
+}
+export function LoginScreen(){
+ function done(){const next=new URLSearchParams(location.search).get('next');location.assign(next==='/admin'||next==='/scan'?next:'/#profile');}
+ return <main className="account-screen"><a className="account-logo" href="/"><Sprout/>语芽 <small>LingoSprout</small></a><div className="account-login-card"><span className="eyebrow">A GARDEN OF POSSIBILITIES</span><h1>欢迎回来，<br/>继续长一点点。</h1><p>邮箱账户 · 设备管理 · 安全扫码登录</p><AccountAccess onSuccess={done}/><div className="account-footnote"><ShieldCheck size={17}/>课程仍可游客体验，学习进度保存在当前浏览器。</div></div><a className="text-link" href="/">先去学习 <ArrowRight size={16}/></a></main>;
+}

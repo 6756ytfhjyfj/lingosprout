@@ -1,15 +1,12 @@
 import 'server-only';
 import { cookies } from 'next/headers';
 import { randomUUID } from 'node:crypto';
-import { AppError, authConfigured, isProduction } from './store';
+import { AppError, isProduction } from './store';
+import { sessionAccount } from './accounts';
 
 export async function identity() {
-  const jar=await cookies();const token=jar.get('ls_access')?.value;
-  if(token && authConfigured()) {
-    const response=await fetch(`${process.env.SUPABASE_URL}/auth/v1/user`,{headers:{apikey:process.env.SUPABASE_PUBLISHABLE_KEY!,Authorization:`Bearer ${token}`},cache:'no-store',signal:AbortSignal.timeout(8000)});
-    if(response.ok){const user=await response.json();if(user.id && !user.is_anonymous) return {id:user.id as string,email:user.email as string,authenticated:true};}
-    throw new AppError(401,'登录已失效，请到“我的”重新登录。');
-  }
+  const jar=await cookies();const account=await sessionAccount();
+  if(account)return {id:account.id,email:account.email,authenticated:true,role:account.role,titles:account.titles};
   if(isProduction()) throw new AppError(401,'请先登录账户。游客仍可学习全部入门课程。');
   let id=jar.get('ls_guest')?.value;
   if(!id || !/^guest-[0-9a-f-]{36}$/.test(id)) {

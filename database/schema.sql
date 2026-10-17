@@ -14,10 +14,11 @@ grant select, insert, update, delete on public.lingosprout_server_state to servi
 create table if not exists public.subscriptions (
   user_id uuid primary key references auth.users(id) on delete cascade,
   status text not null default 'free' check (status in ('free','active')),
-  source text not null default 'none' check (source in ('none','payment')),
+  source text not null default 'none' check (source in ('none','payment','admin')),
   expires_at timestamptz,
   updated_at timestamptz not null default now(),
-  check (status <> 'active' or source = 'payment')
+  check (status <> 'active' or source in ('payment','admin')),
+  check (source <> 'admin' or expires_at is not null)
 );
 alter table public.subscriptions enable row level security;
 revoke all on public.subscriptions from public, anon, authenticated;
@@ -26,8 +27,8 @@ grant select, insert, update, delete on public.subscriptions to service_role;
 drop policy if exists "read_own_subscription" on public.subscriptions;
 create policy "read_own_subscription" on public.subscriptions for select to authenticated
 using ((select auth.uid()) = user_id);
--- No browser INSERT or UPDATE policy: a trusted future payment webhook alone
--- may write paid entitlements. User metadata is never used for authorization.
+-- No browser INSERT or UPDATE policy: trusted administrator transactions manage
+-- current entitlements. User metadata is never used for authorization.
 
 create or replace function public.lingosprout_read(p_user_id uuid)
 returns jsonb language sql stable security invoker set search_path = '' as $$

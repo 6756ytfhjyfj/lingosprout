@@ -1,0 +1,2 @@
+import {defineConfig} from '@playwright/test';
+export default defineConfig({testDir:'./tests/accounts',timeout:180000,workers:1,fullyParallel:false,use:{baseURL:process.env.TEST_BASE_URL??'http://127.0.0.1:3000',headless:true,trace:'off',launchOptions:{...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH?{executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH}:{}),...(process.env.TEST_BROWSER_ARGS?{args:JSON.parse(process.env.TEST_BROWSER_ARGS)}:{})}},reporter:'list'});
